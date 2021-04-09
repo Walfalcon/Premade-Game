@@ -1,10 +1,13 @@
 local moonshine = require 'moonshine'
 require "Player"
+require "Tiles"
+require "Map1"
 
 resolution = {160, 144}
 realRes = {160, 144}
 scale = 1
 origin = {0, 0}
+camera = {0, 0}
 
 function love.load()
   love.window.setMode(resolution[1], resolution[2], {fullscreen = true})
@@ -19,14 +22,12 @@ function love.load()
 
   local joysticks = love.joystick.getJoysticks()
   joystick = joysticks[1]
+  Tiles.load()
   Player.load()
 
-  effect = moonshine(moonshine.effects.scanlines)
-                    .chain(moonshine.effects.glow)
+  effect = moonshine(moonshine.effects.glow)
+                    .chain(moonshine.effects.vignette)
                     .chain(moonshine.effects.crt)
-
-  effect.scanlines.frequency = resolution[2]
-  effect.scanlines.thickness = 1/scale
 end
 
 function love.update(dt)
@@ -40,6 +41,7 @@ end
 
 function love.draw()
   effect(function()
+    drawMap(Map1, Tiles, {0, 0})
     Player.draw()
   end)
 end
@@ -77,5 +79,26 @@ function drawAnimatedSprite(animation, x, y, size, flip)
     xSize = -xSize
     xAnchor = 16
   end
+
+  x = math.floor(x - camera[1] + 0.5) * size
+  y = math.floor(y - camera[2] + 0.5) * size
   love.graphics.draw(animation.spritesheet, animation.quads[spriteNum], x + origin[1], y + origin[2], 0, xSize, size, xAnchor)
+end
+
+function drawMap (map, tiles, offset)
+  for y, row in pairs(map) do
+    for x, index in pairs(row) do
+      drawTile(tiles, index, (x + offset[1] - 1) * 16 * scale, (y + offset[2] - 1) * 16 * scale, false)
+    end
+  end
+end
+
+function drawTile(tiles, index, x, y, flip)
+  local xSize = scale
+  local xAnchor = 0
+  if flip then
+    xSize = -xSize
+    xAnchor = 16
+  end
+  love.graphics.draw(tiles.spritesheet, tiles.quads[index], x + origin[1], y + origin[2], 0, xSize, scale, xAnchor)
 end

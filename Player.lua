@@ -55,10 +55,10 @@ function Player.load()
 
   Player.size = scale
 
-  Player.x = 15
-  Player.y = 15
+  Player.x = 16
+  Player.y = 16
 
-  Player.speed = 16
+  Player.speed = 10
   Player.velocity = {0, 0}
 
   Player.dir = "d"
@@ -93,6 +93,13 @@ function Player.update(deltaTime)
 
   Player.x = Player.x + Player.velocity[1] * deltaTime * scale
   Player.y = Player.y + Player.velocity[2] * deltaTime * scale
+
+  if Player.velocity[1] == 0 then
+    Player.x = math.floor(Player.x + 0.5)
+  end
+  if Player.velocity[2] == 0 then
+    Player.y = math.floor(Player.y + 0.5)
+  end
 
   if Player.velocity[1] > 0 then
     Player.currentAnim = Player.walkR

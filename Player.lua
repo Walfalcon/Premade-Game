@@ -58,7 +58,7 @@ function Player.load()
   Player.x = 16
   Player.y = 16
 
-  Player.speed = 10
+  Player.speed = 30
   Player.velocity = {0, 0}
 
   Player.dir = "d"
@@ -91,8 +91,15 @@ function Player.update(deltaTime)
     end
   end
 
-  Player.x = Player.x + Player.velocity[1] * deltaTime * scale
-  Player.y = Player.y + Player.velocity[2] * deltaTime * scale
+  local nextX = Player.x + Player.velocity[1] * deltaTime
+  local nextY = Player.y + Player.velocity[2] * deltaTime
+
+  local xBlocked = false
+  local yBlocked = false
+  if bitcheck(map.flags[Player.y][math.floor((nextX + 0.5) / 16)], 1) then
+    xBlocked = true
+    Player.x =
+  end
 
   if Player.velocity[1] == 0 then
     Player.x = math.floor(Player.x + 0.5)
@@ -124,7 +131,6 @@ function Player.update(deltaTime)
       Player.currentAnim = Player.idleU
     end
   end
-
 end
 
 function Player.draw()

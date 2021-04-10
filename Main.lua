@@ -8,6 +8,7 @@ realRes = {160, 144}
 scale = 1
 origin = {0, 0}
 camera = {0, 0}
+map = Map1
 
 function love.load()
   love.window.setMode(resolution[1], resolution[2], {fullscreen = true})
@@ -41,7 +42,7 @@ end
 
 function love.draw()
   effect(function()
-    drawMap(Map1, Tiles, {0, 0})
+    drawMap(map, Tiles, {0, 0})
     Player.draw()
   end)
 end
@@ -85,8 +86,8 @@ function drawAnimatedSprite(animation, x, y, size, flip)
   love.graphics.draw(animation.spritesheet, animation.quads[spriteNum], x + origin[1], y + origin[2], 0, xSize, size, xAnchor)
 end
 
-function drawMap (map, tiles, offset)
-  for y, row in pairs(map) do
+function drawMap(map, tiles, offset)
+  for y, row in pairs(map.tiles) do
     for x, index in pairs(row) do
       drawTile(tiles, index, (x + offset[1] - 1) * 16 * scale, (y + offset[2] - 1) * 16 * scale, false)
     end
@@ -101,4 +102,9 @@ function drawTile(tiles, index, x, y, flip)
     xAnchor = 16
   end
   love.graphics.draw(tiles.spritesheet, tiles.quads[index], x + origin[1], y + origin[2], 0, xSize, scale, xAnchor)
+end
+
+function bitcheck(value, bit)
+  value = math.floor(a / (2^bit))
+  return value % 2
 end
